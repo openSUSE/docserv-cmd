@@ -1,0 +1,25 @@
+#!/bin/bash
+# API client for Docserv² instances.
+# Valid subcommands:
+#   dscmd trigger
+
+
+me=$(test -L $(realpath $0) && readlink $(realpath $0) || echo $(realpath $0))
+mydir=$(dirname $me)
+
+out() {
+  >&2 echo -e "$1"
+  exit 1
+}
+
+app_help() {
+  sed -rn '/#!/{n; p; :loop n; p; /^[ \t]*$/q; b loop}' $me | sed -r -e 's/^# ?//' -e "s/\\\$0/$(basename $me)/"
+  exit
+}
+
+if [[ "$1" == 'trigger' ]]; then
+  shift
+  $mydir/dscmd-trigger "$@"
+else
+  app_help
+fi

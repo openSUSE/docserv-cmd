@@ -31,6 +31,15 @@ app_help() {
   exit
 }
 
+if [[ -f $config ]]; then
+  . $config
+else
+  out "No $config found. See --help."
+fi
+([[ ! "$validtargets" ]] || [[ ! "$server" ]] || [[ ! "$port" ]]) &&
+  out "$config does not include all necessary parameters. See --help."
+
+
 products=
 docsets=
 langs=
@@ -59,21 +68,16 @@ for i in "$@"
     esac
 done
 
-if [[ -f $config ]]; then
-  . $config
-else
-  out "No server.conf found. See --help."
-fi
-([[ ! "$targets" ]] || [[ ! "$server" ]] || [[ ! "$port" ]]) &&
-  out "server.conf does not include all necessary parameters. See --help."
-
 [[ "$unknown" ]] &&
   out "Unknown command-line parameters present:\n${unknown}See --help."
 
-([[ ! "$targets" ]] || [[ ! "$products" ]] || [[ ! "$docsets" ]] || [[ ! "$langs" ]]) &&
+([[ ! "$targets" ]] || [[ ! "$products" ]] || [[ ! "$docsets" ]] || [[ ! "$langs" ]]) && \
   out "Missing at least one command-line parameter. See --help."
 
-validtargets=$(echo "$targets" | sed -r -e 's/^[^=]+=//' -e 's/,/\n/g' | sort -u)
+for target in $targets; do
+  [[ ! $(echo " $validtargets " | sed 's/,/ /g' | grep -oP " $target ") ]] && \
+    out "Target $target is unknown."
+done
 
 # ---
 

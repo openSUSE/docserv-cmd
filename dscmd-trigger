@@ -31,15 +31,6 @@ app_help() {
   exit
 }
 
-if [[ -f $config ]]; then
-  . $config
-else
-  out "No $config found. See --help."
-fi
-([[ ! "$validtargets" ]] || [[ ! "$server" ]] || [[ ! "$port" ]]) &&
-  out "$config does not include all necessary parameters. See --help."
-
-
 products=
 docsets=
 langs=
@@ -67,6 +58,15 @@ for i in "$@"
       ;;
     esac
 done
+
+if [[ -f $config ]]; then
+  . $config
+else
+  out "No $config found. See --help."
+fi
+([[ ! "$validtargets" ]] || [[ ! "$server" ]] || [[ ! "$port" ]]) && \
+  out "$config does not include all necessary parameters. See --help."
+
 
 [[ "$unknown" ]] &&
   out "Unknown command-line parameters present:\n${unknown}See --help."

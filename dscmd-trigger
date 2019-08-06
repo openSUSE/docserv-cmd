@@ -7,7 +7,7 @@
 #   the following contents:
 #     server=http://server.address  # server address
 #     port=8080                     # server port
-#     targets=target,names          # target sync servers, as defined in the INI
+#     validtargets=target,names     # target server names, as in Docserv2 INI
 # 2-Run this script:
 #   ./$0 --products=PRODUCTS --docsets=DOCSETS --langs=LANGS
 #

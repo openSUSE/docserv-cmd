@@ -3,7 +3,7 @@
 #
 # To use:
 #
-# 1-Provide a file `dscmd-server.conf` in your home directory. Include
+# 1-Provide a file `.dscmd-server.conf` in your home directory. Include
 #   the following contents:
 #     server=http://server.address  # server address
 #     port=8080                     # server port

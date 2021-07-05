@@ -9,7 +9,7 @@
 #     port=8080                     # server port
 #     validtargets=target,names     # target server names, as in Docserv2 INI
 # 2-Run this script:
-#   ./$0 --products=PRODUCTS --docsets=DOCSETS --langs=LANGS
+#   ./$0 --targets=TARGET --products=PRODUCTS --docsets=DOCSETS --langs=LANGS
 #
 #   * all parameters are mandatory
 #   * "=" characters are mandatory

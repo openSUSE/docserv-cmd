@@ -1,0 +1,29 @@
+#!/bin/bash
+# Check queue status of Docserv2 instance defined in `~/dscmd-server.conf`.
+# Usage: dscmd queue
+
+
+me=$(test -L $(realpath $0) && readlink $(realpath $0) || echo $(realpath $0))
+mydir=$(dirname $me)
+
+config=$HOME/.dscmd-server.conf
+
+out() {
+  >&2 echo -e "$1"
+  exit 1
+}
+
+app_help() {
+  sed -rn '/#!/{n; p; :loop n; p; /^[ \t]*$/q; b loop}' $me | sed -r -e 's/^# ?//' -e "s/\\\$0/$(basename $me)/"
+  exit
+}
+
+if [[ -f $config ]]; then
+  . $config
+else
+  out "No $config found. See --help."
+fi
+
+echo "Getting queue from ${server}:${port}"
+
+wget -qO - "${server}:${port}" | jq '.[] | .id,.product,.docset,.lang,.open,.building' | sed -r 's/^"[a-f0-9]{9}"$/---/' | less

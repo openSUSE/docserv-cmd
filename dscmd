@@ -2,6 +2,7 @@
 # API client for Docserv² instances.
 # Valid subcommands:
 #   dscmd trigger
+#   dscmd queue
 
 
 me=$(test -L $(realpath $0) && readlink $(realpath $0) || echo $(realpath $0))
@@ -20,6 +21,9 @@ app_help() {
 if [[ "$1" == 'trigger' ]]; then
   shift
   $mydir/dscmd-trigger "$@"
+elif [[ "$1" == 'queue' ]]; then
+  shift
+  $mydir/dscmd-queue "$@"
 else
   app_help
 fi

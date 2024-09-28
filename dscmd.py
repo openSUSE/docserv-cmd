@@ -25,6 +25,7 @@ CONFIG_FILE = os.path.expanduser("~/.dscmd-server.conf")
 
 SEPARATOR = re.compile(r"[,; ]")
 
+DEFAULT_PORT = 1169
 
 # --- Loggers
 LOGGERNAME = "dscmd"
@@ -112,7 +113,7 @@ def parsecli(cliargs=None) -> argparse.Namespace:
         f"Using the configuration settings:\n"
         f" * Configuration file: {CONFIG_FILE!r}\n"
         f" * Server: {config.get('server', 'localhost')}\n"
-        f" * Port: {config.get('port', 8080)}\n"
+        f" * Port: {config.get('port', DEFAULT_PORT)}\n"
         f" * Valid targets: {config.get('validtargets', 'None')}\n"
     )
     parser = argparse.ArgumentParser(
@@ -132,6 +133,9 @@ def parsecli(cliargs=None) -> argparse.Namespace:
 
     # Common arguments for trigger and metadata
     common_parser = argparse.ArgumentParser(add_help=False)
+    common_parser.add_argument("-P", "--port",
+                               default=config.get('port', DEFAULT_PORT),
+                               help="Port number of the Docserv² instance")
     common_parser.add_argument("-t", "--targets",
                       help="Target server names")
     common_parser.add_argument("-p", "--products",
@@ -216,12 +220,12 @@ def queue(args: argparse.Namespace) -> int:
     config = args.config
     log.info("Queue status of Docserv² instance:")
     # wget -qO - "${server}:${port}" | jq '.[] | .id,.product,.docset,.lang,.open,.building' | sed -r 's/^"[a-f0-9]{9}"$/---/'
-    server_url = f"{config['server']}:{config['port']}"
+    server_url = f"{config['server']}:{args.port}"
     if not server_url.startswith("http"):
         server_url = f"http://{server_url}"
 
     # Fetch data from the server
-    response = requests.get(server_url)
+    response = requests.get(server_url,)
     if response.status_code == 200:
         data = response.json()  # Parse JSON response
         if args.full:
@@ -292,7 +296,7 @@ def trigger(args: argparse.Namespace) -> int|None:
     ]
 
     # Server details from config
-    server_url = f"{config['server']}:{config['port']}"
+    server_url = f"{config['server']}:{args.port}"
     if not server_url.startswith("http"):
         server_url = f"http://{server_url}"
 
@@ -311,7 +315,7 @@ def metadata(args: argparse.Namespace) -> int:
     """
     config = args.config
     # Server details from config
-    server_url = f"{config['server']}:{config['port']}"
+    server_url = f"{config['server']}:{args.port}"
     if not server_url.startswith("http"):
         server_url = f"http://{server_url}/metadata"
 
